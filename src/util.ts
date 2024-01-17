@@ -11,8 +11,7 @@ export function getProjectPath(): string {
   // if (!config) {
   //   throw "Error"
   // }
-  return "/Users/maximet/Documents/Notes/Projects"
-  // return config
+  return "/Users/maximet/Documents/Tasks/Active"
 }
 
 // TODO Implement
@@ -22,7 +21,7 @@ export function getInboxPath(): string {
   //   throw "Error"
   // }
   // return config
-  return "/Users/maximet/Documents/Notes/Inbox.md"
+  return "/Users/maximet/Documents/Tasks/Inbox.md"
 }
 
 export function getProjectFiles(): path.ParsedPath[] {

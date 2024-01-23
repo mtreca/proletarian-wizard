@@ -2,7 +2,7 @@
   "name": "task-parser",
   "displayName": "Task Parser",
   "description": "Task management in plaintext for engineers.",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "engines": {
     "vscode": "^1.44.0"
   },

@@ -105,6 +105,10 @@ export function getDate(): string {
 }
 
 export function isOverdue(date: string): boolean {
+  return DateTime.fromISO(date).plus({days: 1}) <= DateTime.now()
+}
+
+export function isDue(date: string): boolean {
   return DateTime.fromISO(date) <= DateTime.now()
 }
 

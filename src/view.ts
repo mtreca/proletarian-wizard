@@ -1,5 +1,6 @@
 import * as vscode from "vscode";
 import * as todo from "./todos";
+import * as util from "./util";
 import * as main from './extension'
 
 export class ExtensionViews {
@@ -31,9 +32,8 @@ export class ExtensionViews {
 class TodoTreeItem extends vscode.TreeItem {
 
   constructor(todo: todo.TodoItem) {
-    // TODO Add an icon if a task is overdue
-    // super((todo.done ? `✓` : "☐") + " " + todo.text);
-    super(todo.text);
+    const prefix = util.isOverdue(todo.date) ? "⚑ " : ""
+    super(`${prefix}${todo.text}`);
     this.command = {
       title: "Open",
       command: "tp.openFile",

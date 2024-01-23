@@ -34,13 +34,13 @@ export class TodoGroup {
       case TodoView.Inbox:
         return this.todos.filter((todo) => todo.file === "Inbox")
       case TodoView.Anytime:
-        return this.todos.filter((todo) => !todo.date && !todo.done && !todo.wait)
+        return this.todos.filter((todo) => todo.file !== "Inbox" && !todo.date && !todo.done && !todo.wait)
       case TodoView.Scheduled:
-        return this.todos.filter((todo) => todo.date && !todo.done && !todo.wait)
+        return this.todos.filter((todo) => todo.file !== "Inbox" && todo.date && !todo.done && !todo.wait)
       case TodoView.Someday:
-        return this.todos.filter((todo) => !todo.done && todo.wait)
+        return this.todos.filter((todo) => todo.file !== "Inbox" && !todo.done && todo.wait)
       case TodoView.Today:
-        return this.todos.filter((todo) => !todo.done && (todo.next || (todo.date && util.isOverdue(todo.date))))
+        return this.todos.filter((todo) => todo.file !== "Inbox" && !todo.done && (todo.next || (todo.date && util.isDue(todo.date))))
       default:
         return this.todos
     }

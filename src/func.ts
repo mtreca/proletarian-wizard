@@ -14,6 +14,7 @@ export class ExtensionCommands {
       increaseDateWeek,
       openFile,
       openProject,
+      openInbox,
       refreshTasks,
       findTask,
       toggleDate,
@@ -73,6 +74,10 @@ export async function openProject() {
       util.openFile(util.getFullPath(pick.file))
     }
   })
+}
+
+export async function openInbox() {
+  util.openFile(util.getInboxPath())
 }
 
 /// Task Management Functions

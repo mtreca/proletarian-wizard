@@ -2,7 +2,7 @@
   "name": "task-parser",
   "displayName": "Task Parser",
   "description": "Task management in plaintext for engineers.",
-  "version": "1.0.4",
+  "version": "1.1.0",
   "engines": {
     "vscode": "^1.44.0"
   },
@@ -36,6 +36,11 @@
       {
         "command": "tp.openProject",
         "title": "Open Project",
+        "category": "Task Parser"
+      },
+      {
+        "command": "tp.openInbox",
+        "title": "Open Inbox",
         "category": "Task Parser"
       },
       {
@@ -103,47 +108,56 @@
       {
         "command": "tp.toggleDate",
         "key": "Ctrl+Alt+d",
-        "mac": "Ctrl+Alt+d"
+        "mac": "Ctrl+Alt+d",
+        "when": "editorTextFocus && editorLangId == 'markdown'"
       },
       {
         "command": "tp.toggleTodo",
         "key": "Ctrl+Alt+Enter",
-        "mac": "Ctrl+Alt+Enter"
+        "mac": "Ctrl+Alt+Enter",
+        "when": "editorTextFocus && editorLangId == 'markdown'"
       },
       {
         "command": "tp.toggleDone",
         "key": "Ctrl+Alt+x",
-        "mac": "Ctrl+Alt+x"
+        "mac": "Ctrl+Alt+x",
+        "when": "editorTextFocus && editorLangId == 'markdown'"
       },
       {
         "command": "tp.toggleWait",
         "key": "Ctrl+Alt+w",
-        "mac": "Ctrl+Alt+w"
+        "mac": "Ctrl+Alt+w",
+        "when": "editorTextFocus && editorLangId == 'markdown'"
       },
       {
         "command": "tp.toggleNext",
         "key": "Ctrl+Alt+n",
-        "mac": "Ctrl+Alt+n"
+        "mac": "Ctrl+Alt+n",
+        "when": "editorTextFocus && editorLangId == 'markdown'"
       },
       {
         "command": "tp.increaseDateDay",
         "key": "Ctrl+Alt+up",
-        "mac": "Ctrl+Alt+up"
+        "mac": "Ctrl+Alt+up",
+        "when": "editorTextFocus && editorLangId == 'markdown'"
       },
       {
         "command": "tp.decreaseDateDay",
         "key": "Ctrl+Alt+down",
-        "mac": "Ctrl+Alt+down"
+        "mac": "Ctrl+Alt+down",
+        "when": "editorTextFocus && editorLangId == 'markdown'"
       },
       {
         "command": "tp.increaseDateWeek",
         "key": "Ctrl+Alt+Shift+up",
-        "mac": "Ctrl+Alt+Shift+up"
+        "mac": "Ctrl+Alt+Shift+up",
+        "when": "editorTextFocus && editorLangId == 'markdown'"
       },
       {
         "command": "tp.decreaseDateWeek",
         "key": "Ctrl+Alt+Shift+down",
-        "mac": "Ctrl+Alt+Shift+down"
+        "mac": "Ctrl+Alt+Shift+down",
+        "when": "editorTextFocus && editorLangId == 'markdown'"
       }
     ],
     "viewsContainers": {

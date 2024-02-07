@@ -83,7 +83,8 @@ export class LineOperations {
   }
 
   private lineToString(line: ParsedLine): string {
-    let text = `${line.indent}${line.marker} ${line.check}`;
+    let text = `${line.indent}${line.marker}`;
+    text = line.check ? `${text} ${line.check}` : text
     text = line.date ? `${text} ${line.date}:` : text
     text = `${text} ${line.line}`
     text = line.wait ? `${text} @wait` : text

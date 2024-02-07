@@ -2,7 +2,7 @@
   "name": "task-parser",
   "displayName": "Task Parser",
   "description": "Task management in plaintext for engineers.",
-  "version": "1.1.1",
+  "version": "1.2.0",
   "engines": {
     "vscode": "^1.44.0"
   },
@@ -105,6 +105,26 @@
       }
     ],
     "keybindings": [
+      {
+        "command": "tp.addTaskToInbox",
+        "key": "Ctrl+Alt+i",
+        "mac": "Ctrl+Alt+i"
+      },
+      {
+        "command": "tp.openProject",
+        "key": "Ctrl+Alt+o",
+        "mac": "Ctrl+Alt+o"
+      },
+      {
+        "command": "tp.addTaskToInbox",
+        "key": "Ctrl+Alt+a",
+        "mac": "Ctrl+Alt+a"
+      },
+      {
+        "command": "tp.findTask",
+        "key": "Ctrl+Alt+f",
+        "mac": "Ctrl+Alt+f"
+      },
       {
         "command": "tp.toggleDate",
         "key": "Ctrl+Alt+d",

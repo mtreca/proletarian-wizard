@@ -2,7 +2,7 @@
   "name": "task-parser",
   "displayName": "Task Parser",
   "description": "Task management in plaintext for engineers.",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "engines": {
     "vscode": "^1.44.0"
   },
@@ -17,11 +17,7 @@
     "configuration": {
       "title": "Task Parser",
       "properties": {
-        "task-parser.inboxFile": {
-          "type": "string",
-          "description": "The full path to the inbox file to use for tasks."
-        },
-        "task-parser.projectDir": {
+        "task-parser.baseDir": {
           "type": "string",
           "description": "The full path to the directory containing project files."
         }

@@ -40,6 +40,11 @@
         "category": "Task Parser"
       },
       {
+        "command": "tp.archiveProject",
+        "title": "Archive Project",
+        "category": "Task Parser"
+      },
+      {
         "command": "tp.createProject",
         "title": "Create Project",
         "category": "Task Parser"

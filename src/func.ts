@@ -7,6 +7,7 @@ export class ExtensionCommands {
     constructor(context: vscode.ExtensionContext) {
         const functions = [
             addTaskToInbox,
+            archiveProject,
             createProject,
             decreaseDateDay,
             decreaseDateWeek,
@@ -75,6 +76,17 @@ export async function openProject() {
     vscode.window.showQuickPick(choices).then(async (pick) => {
         if (pick) {
             util.openFile(util.getFullPath(pick.file))
+        }
+    })
+}
+
+export async function archiveProject() {
+    const choices = util.getProjectFiles().map((f) => ({ label: f.name, file: f }))
+    vscode.window.showQuickPick(choices).then(async (pick) => {
+        if (pick) {
+            const oldPath = util.getFullPath(pick.file);
+            const newPath = util.getArchivePath().concat(`/${util.getDate()} ${pick.file.base}`);
+            util.moveFile(oldPath, newPath);
         }
     })
 }

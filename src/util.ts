@@ -14,8 +14,12 @@ export function getBasePath(): string {
     return config
 }
 
-export function getProjectPath() {
+export function getActivePath() {
     return getBasePath().concat("/", "Active")
+}
+
+export function getArchivePath() {
+    return getBasePath().concat("/", "Archive")
 }
 
 export function getInboxPath(): string {
@@ -23,7 +27,7 @@ export function getInboxPath(): string {
 }
 
 export function getProjectFiles(): path.ParsedPath[] {
-    const projectDir = getProjectPath()
+    const projectDir = getActivePath()
     const projectFiles = fs
         .readdirSync(projectDir)
         .map((file) => path.parse(path.join(projectDir, file)))
@@ -36,7 +40,7 @@ export function getInboxFile(): path.ParsedPath {
 }
 
 export function formProjectPath(name: string): string {
-    const projectPath = getProjectPath()
+    const projectPath = getActivePath()
     return projectPath.concat("/", name, ".md")
 }
 
@@ -57,6 +61,12 @@ export function appendToFile(path: string, data: string) {
 export function createFile(path: string, data: string = "") {
     if (!fs.existsSync(path)) {
         fs.writeFileSync(path, data)
+    }
+}
+
+export function moveFile(oldPath: string, newPath: string) {
+    if (fs.existsSync(oldPath)) {
+        fs.renameSync(oldPath, newPath);
     }
 }
 

@@ -29,7 +29,6 @@ export class ExtensionViews {
 
 class TodoTreeItem extends vscode.TreeItem {
     constructor(todo: todo.TodoItem) {
-        // TODO Consider adding Harvey Balls
         const prefix = util.isOverdue(todo.date) ? "⚑ " : ""
         super(`${prefix}${todo.text}`)
         this.command = {
@@ -37,7 +36,6 @@ class TodoTreeItem extends vscode.TreeItem {
             command: "tp.openFile",
             arguments: [vscode.Uri.file(todo.path), todo.line],
         }
-        // TODO Change this value depending on the task
         this.description = todo.file
     }
 }

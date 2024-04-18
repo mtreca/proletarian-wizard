@@ -129,3 +129,7 @@ export function decreaseDate(date: string, days: number): string {
     const base = DateTime.fromISO(date).minus({ days: days }).toISODate()
     return base
 }
+
+export function getDateDescription(date: string, format: string = "EEEE, LLL dd") {
+    return DateTime.fromISO(date).toFormat(format);
+}

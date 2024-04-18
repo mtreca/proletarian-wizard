@@ -29,6 +29,7 @@ export class ExtensionViews {
 
 class TodoTreeItem extends vscode.TreeItem {
     constructor(todo: todo.TodoItem) {
+        // TODO Consider adding Harvey Balls
         const prefix = util.isOverdue(todo.date) ? "⚑ " : ""
         super(`${prefix}${todo.text}`)
         this.command = {
@@ -41,8 +42,8 @@ class TodoTreeItem extends vscode.TreeItem {
     }
 }
 
-class ProjectTreeItem extends vscode.TreeItem {
-    constructor(name: string, private projectTodos: todo.TodoItem[], viewType: todo.TodoView) {
+class CollapsibleTreeItem extends vscode.TreeItem {
+    constructor(name: string, private todoItems: todo.TodoItem[], viewType: todo.TodoView) {
         super(name)
         this.collapsibleState =
             viewType == todo.TodoView.Anytime
@@ -50,7 +51,7 @@ class ProjectTreeItem extends vscode.TreeItem {
                 : vscode.TreeItemCollapsibleState.Collapsed
     }
 
-    todosAsTreeItems = () => this.projectTodos.map((todo) => new TodoTreeItem(todo))
+    todosAsTreeItems = () => this.todoItems.map((todo) => new TodoTreeItem(todo))
 }
 
 export class TodoTreeView implements vscode.TreeDataProvider<TodoTreeItem> {
@@ -68,34 +69,51 @@ export class TodoTreeView implements vscode.TreeDataProvider<TodoTreeItem> {
         this.onDidChangeTreeDataEventEmitter.fire(undefined)
     }
 
-    getTreeItem(element: TodoTreeItem | ProjectTreeItem): TodoTreeItem {
+    getTreeItem(element: TodoTreeItem | CollapsibleTreeItem): TodoTreeItem {
         return element
     }
 
     async getChildren(
-        element?: TodoTreeItem | ProjectTreeItem | undefined
-    ): Promise<TodoTreeItem[] | ProjectTreeItem[]> {
+        element?: TodoTreeItem | CollapsibleTreeItem | undefined
+    ): Promise<TodoTreeItem[] | CollapsibleTreeItem[]> {
         if (element) {
-            if (element instanceof ProjectTreeItem) {
+            if (element instanceof CollapsibleTreeItem) {
                 return element.todosAsTreeItems()
             }
             return []
         }
 
         const todos = main.Todos.get(this.type)
-        if (this.type === todo.TodoView.Inbox || this.type === todo.TodoView.Today)
-            return todos.map((todo) => {
-                return new TodoTreeItem(todo)
-            })
 
-        const projects = Array.from(new Set(todos.map((todo) => todo.file)))
-        return projects.map(
-            (project) =>
-                new ProjectTreeItem(
-                    project,
-                    todos.filter((todo) => todo.file === project),
-                    this.type
-                )
-        )
+        // Anytime and Someday are grouped by project
+        if (this.type === todo.TodoView.Anytime || this.type === todo.TodoView.Someday) {
+            const projects = Array.from(new Set(todos.map((todo) => todo.file)))
+            return projects.map(
+                (project) =>
+                    new CollapsibleTreeItem(
+                        project,
+                        todos.filter((todo) => todo.file === project),
+                        this.type
+                    )
+            )
+        }
+
+        // Scheduled is grouped by date
+        if (this.type === todo.TodoView.Scheduled) {
+            const dates = Array.from(new Set(todos.map((todo) => todo.date))).sort((a, b) => (a > b ? 1 : -1))
+            return dates.map(
+                (date) =>
+                    new CollapsibleTreeItem(
+                        util.getDateDescription(date),
+                        todos.filter((todo) => todo.date === date),
+                        this.type
+                    )
+            )
+        }
+
+        // Today and Inbox are not grouped
+        return todos.map((todo) => {
+            return new TodoTreeItem(todo)
+        })
     }
 }

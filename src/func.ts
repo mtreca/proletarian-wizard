@@ -11,18 +11,19 @@ export class ExtensionCommands {
             createProject,
             decreaseDateDay,
             decreaseDateWeek,
+            findTask,
             increaseDateDay,
             increaseDateWeek,
+            // moveTaskToProject,
             openFile,
-            openProject,
             openInbox,
+            openProject,
             refreshTasks,
-            findTask,
             toggleDate,
-            toggleWait,
-            toggleNext,
             toggleDone,
+            toggleNext,
             toggleTodo,
+            toggleWait,
         ]
         functions.forEach((fn) => {
             context.subscriptions.push(vscode.commands.registerCommand(`tp.${fn.name}`, fn))
@@ -49,6 +50,30 @@ export async function createProject() {
     })
 }
 
+export async function openProject() {
+    const choices = util.getProjectFiles().map((f) => ({ label: f.name, file: f }))
+    vscode.window.showQuickPick(choices).then(async (pick) => {
+        if (pick) {
+            util.openFile(util.getFullPath(pick.file))
+        }
+    })
+}
+
+export async function archiveProject() {
+    const choices = util.getProjectFiles().map((f) => ({ label: f.name, file: f }))
+    vscode.window.showQuickPick(choices).then(async (pick) => {
+        if (pick) {
+            const oldPath = util.getFullPath(pick.file)
+            const newPath = util.getArchivePath().concat(`/${util.getDate()} ${pick.file.base}`)
+            util.moveFile(oldPath, newPath)
+        }
+    })
+}
+
+export async function openInbox() {
+    util.openFile(util.getInboxPath())
+}
+
 export async function addTaskToInbox() {
     vscode.window.showInputBox({ prompt: "New Task Title", value: "" }).then((newTask) => {
         if (newTask) {
@@ -71,29 +96,7 @@ export async function findTask() {
     })
 }
 
-export async function openProject() {
-    const choices = util.getProjectFiles().map((f) => ({ label: f.name, file: f }))
-    vscode.window.showQuickPick(choices).then(async (pick) => {
-        if (pick) {
-            util.openFile(util.getFullPath(pick.file))
-        }
-    })
-}
 
-export async function archiveProject() {
-    const choices = util.getProjectFiles().map((f) => ({ label: f.name, file: f }))
-    vscode.window.showQuickPick(choices).then(async (pick) => {
-        if (pick) {
-            const oldPath = util.getFullPath(pick.file);
-            const newPath = util.getArchivePath().concat(`/${util.getDate()} ${pick.file.base}`);
-            util.moveFile(oldPath, newPath);
-        }
-    })
-}
-
-export async function openInbox() {
-    util.openFile(util.getInboxPath())
-}
 
 /// Task Management Functions
 

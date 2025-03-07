@@ -6,12 +6,12 @@ import { DateTime } from "luxon"
 /// Path Functions
 
 export function getBasePath(): string {
-    const config: string | undefined = vscode.workspace.getConfiguration("task-parser").get("baseDir")
-    if (!config) {
+    const baseDir: string | undefined = vscode.workspace.getConfiguration("task-parser").get("baseDir")
+    if (!baseDir) {
         vscode.window.showErrorMessage("No base path found in user settings. Cannot load tasks.")
         throw "Error"
     }
-    return config
+    return baseDir
 }
 
 export function getActivePath() {
@@ -27,12 +27,16 @@ export function getInboxPath(): string {
 }
 
 export function getProjectFiles(): path.ParsedPath[] {
-    const projectDir = getActivePath()
-    const projectFiles = fs
-        .readdirSync(projectDir)
-        .map((file) => path.parse(path.join(projectDir, file)))
-        .filter((file) => file.ext === ".md")
-    return projectFiles
+    const basePath = getBasePath()
+    const projectDirs = ["Active", "Someday"]
+    return projectDirs
+        .map((projectDir) => basePath.concat("/", projectDir))
+        .flatMap((projectDir) => {
+            return fs
+                .readdirSync(projectDir)
+                .map((file) => path.parse(path.join(projectDir, file)))
+                .filter((file) => file.ext === ".md")
+        })
 }
 
 export function getInboxFile(): path.ParsedPath {
@@ -66,7 +70,7 @@ export function createFile(path: string, data: string = "") {
 
 export function moveFile(oldPath: string, newPath: string) {
     if (fs.existsSync(oldPath)) {
-        fs.renameSync(oldPath, newPath);
+        fs.renameSync(oldPath, newPath)
     }
 }
 
@@ -131,5 +135,5 @@ export function decreaseDate(date: string, days: number): string {
 }
 
 export function getDateDescription(date: string, format: string = "EEEE, LLL dd") {
-    return DateTime.fromISO(date).toFormat(format);
+    return DateTime.fromISO(date).toFormat(format)
 }

@@ -157,14 +157,12 @@ export function findAllTodos(): TodoItem[] {
     const parser = new LineOperations()
 
     const todos: TodoItem[] = []
-
-    // Actually, only pass the base path, do a recursive search and filter based on base dir
-    const files = [...util.getProjectFiles(), util.getInboxFile()]
+    const files = [...util.getProjectPaths(), util.getFilePath(undefined, "Inbox")]
 
     files.forEach((filePath) => {
         let fileLines = util.getFileContents(filePath).split("\n")
         let fileTasks = fileLines
-            .map((line, number) => parser.toTodo(filePath, line, number))
+            .map((line, number) => parser.toTodo(path.parse(filePath), line, number))
             .filter((item): item is TodoItem => !!item)
         fileTasks.forEach((task) => {
             todos.push(task)

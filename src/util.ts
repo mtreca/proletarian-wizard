@@ -14,48 +14,25 @@ export function getBasePath(): string {
     return baseDir
 }
 
-export function getActivePath() {
-    return getBasePath().concat("/", "Active")
+export function getFilePath(directory: string | undefined, project: string | undefined): string {
+    return getBasePath().concat(directory ?? false ? `/${directory}` : "", project ?? false ? `/${project}.md` : "")
 }
 
-export function getArchivePath() {
-    return getBasePath().concat("/", "Archive")
-}
-
-export function getInboxPath(): string {
-    return getBasePath().concat("/", "Inbox.md")
-}
-
-export function getProjectFiles(): path.ParsedPath[] {
-    const basePath = getBasePath()
+export function getProjectPaths(): string[] {
     const projectDirs = ["Active", "Someday"]
-    return projectDirs
-        .map((projectDir) => basePath.concat("/", projectDir))
-        .flatMap((projectDir) => {
-            return fs
-                .readdirSync(projectDir)
-                .map((file) => path.parse(path.join(projectDir, file)))
-                .filter((file) => file.ext === ".md")
-        })
-}
-
-export function getInboxFile(): path.ParsedPath {
-    return path.parse(getInboxPath())
-}
-
-export function formProjectPath(name: string): string {
-    const projectPath = getActivePath()
-    return projectPath.concat("/", name, ".md")
-}
-
-export function getFullPath(file: path.ParsedPath): string {
-    return path.join(file.dir, file.base)
+    return projectDirs.flatMap((dir) => {
+        const projectDir = getFilePath(dir, undefined)
+        return fs
+            .readdirSync(projectDir)
+            .map((file) => path.join(projectDir, file))
+            .filter((file) => file.endsWith(".md"))
+    })
 }
 
 /// Read and Write Operations
 
-export function getFileContents(filePath: path.ParsedPath): string {
-    return `${fs.readFileSync(path.format(filePath))}`
+export function getFileContents(path: string): string {
+    return `${fs.readFileSync(path)}`
 }
 
 export function appendToFile(path: string, data: string) {
@@ -83,6 +60,13 @@ export class SubstituteLine {
 }
 
 /// VSCode Utilities
+
+export function getProjectQuickPick() {
+    return getProjectPaths().map((projectPath) => {
+        const projectFile = path.parse(projectPath)
+        return { label: projectFile.name, file: projectFile, path: projectPath }
+    })
+}
 
 export async function openFile(path: string, line?: number) {
     await vscode.window.showTextDocument(vscode.Uri.parse(path))

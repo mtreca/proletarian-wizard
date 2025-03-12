@@ -70,16 +70,6 @@
         "category": "Task Parser"
       },
       {
-        "command": "tp.toggleWait",
-        "title": "Toggle Task Wait Tag",
-        "category": "Task Parser"
-      },
-      {
-        "command": "tp.toggleNext",
-        "title": "Toggle Task Next Tag",
-        "category": "Task Parser"
-      },
-      {
         "command": "tp.increaseDateDay",
         "title": "Increase Task Date by a Day",
         "category": "Task Parser"
@@ -142,18 +132,6 @@
         "command": "tp.toggleDone",
         "key": "Ctrl+Alt+x",
         "mac": "Ctrl+Alt+x",
-        "when": "editorTextFocus && editorLangId == 'markdown'"
-      },
-      {
-        "command": "tp.toggleWait",
-        "key": "Ctrl+Alt+w",
-        "mac": "Ctrl+Alt+w",
-        "when": "editorTextFocus && editorLangId == 'markdown'"
-      },
-      {
-        "command": "tp.toggleNext",
-        "key": "Ctrl+Alt+n",
-        "mac": "Ctrl+Alt+n",
         "when": "editorTextFocus && editorLangId == 'markdown'"
       },
       {

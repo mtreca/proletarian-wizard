@@ -10,14 +10,12 @@ export enum TodoView {
 }
 
 export interface TodoItem {
-    done: boolean
+    mark: string
+    date: string
     text: string
     path: string
     line: number
     file: string
-    date: string
-    wait: boolean
-    next: boolean
 }
 
 export class TodoGroup {
@@ -29,41 +27,63 @@ export class TodoGroup {
         this.todos = findAllTodos()
     }
 
+    private isInbox(todo: TodoItem) {
+        return todo.file === "Inbox"
+    }
+
+    private isAnytime(todo: TodoItem) {
+        return todo.file !== "Inbox" && !todo.date && todo.mark === "[ ]"
+    }
+
+    private isScheduled(todo: TodoItem) {
+        return todo.file !== "Inbox" && todo.date && todo.mark === "[ ]"
+    }
+
+    private isSomeday(todo: TodoItem) {
+        return todo.file !== "Inbox" && todo.mark === "[-]"
+    }
+
+    private isToday(todo: TodoItem) {
+        return todo.file !== "Inbox" && todo.mark !== "[x]" && todo.date && util.isDue(todo.date)
+    }
+
     public get(view?: TodoView): TodoItem[] {
         switch (view) {
             case TodoView.Inbox:
-                return this.todos.filter((todo) => todo.file === "Inbox")
+                return this.todos.filter((todo) => this.isInbox(todo))
             case TodoView.Anytime:
-                return this.todos.filter((todo) => todo.file !== "Inbox" && !todo.date && !todo.done && !todo.wait)
+                return this.todos.filter((todo) => this.isAnytime(todo))
             case TodoView.Scheduled:
-                return this.todos.filter((todo) => todo.file !== "Inbox" && todo.date && !todo.done && !todo.wait)
+                return this.todos.filter((todo) => this.isScheduled(todo))
             case TodoView.Someday:
-                return this.todos.filter((todo) => todo.file !== "Inbox" && !todo.done && todo.wait)
+                return this.todos.filter((todo) => this.isSomeday(todo))
             case TodoView.Today:
-                return this.todos.filter(
-                    (todo) => todo.file !== "Inbox" && !todo.done && (todo.next || (todo.date && util.isDue(todo.date)))
-                )
+                return this.todos.filter((todo) => this.isToday(todo))
             default:
                 return this.todos
         }
     }
 }
 
+// TODO: This should be a class. From and to string. That's it.
+
 interface ParsedLine {
     indent: string
     marker: string
     check: string
     date: string
-    next: boolean
-    wait: boolean
     line: string
 }
 
 export class LineOperations {
     constructor() {}
 
+    // TODO: Extract function isTask or something that simply checks if a given line is a TODO.
+
+    // TODO: Refactor this to make it NOT WORK on line that are not tasks. Much easier.
     private parseLine(line: string): ParsedLine {
-        let struct = { indent: "", marker: "", check: "", date: "", next: false, wait: false, line: line }
+        // TODO: Wait, do I need to return a struct at all if the regex doesn't match?
+        let struct = { indent: "", marker: "", check: "", date: "", line: line }
         const regexp = /^(\s*)?(?:([*-]|\d+\.)\s*)?(?:(\[.?\])\s+)?(?:((?:\d\d\d\d-)?\d\d-\d\d):\s*)?(.+)/
         const parsed = regexp.exec(line)
         if (parsed) {
@@ -72,14 +92,6 @@ export class LineOperations {
             struct.check = parsed[3] || ""
             struct.date = parsed[4] || ""
             struct.line = parsed[5] || ""
-            if (struct.line.includes("@next")) {
-                struct.next = true
-                struct.line = struct.line.replace(" @next", "")
-            }
-            if (struct.line.includes("@wait")) {
-                struct.wait = true
-                struct.line = struct.line.replace(" @wait", "")
-            }
         }
         return struct
     }
@@ -89,10 +101,10 @@ export class LineOperations {
         text = line.check ? `${text} ${line.check}` : text
         text = line.date ? `${text} ${line.date}:` : text
         text = `${text} ${line.line}`
-        text = line.wait ? `${text} @wait` : text
-        text = line.next ? `${text} @next` : text
         return text
     }
+
+    // TODO: Wrap these parsing actions in a check to see if todo
 
     toggleDate(line: string): string {
         const parsedLine = this.parseLine(line)
@@ -112,18 +124,6 @@ export class LineOperations {
         return this.lineToString(parsedLine)
     }
 
-    toggleWait(line: string): string {
-        const parsedLine = this.parseLine(line)
-        parsedLine.wait = !parsedLine.wait
-        return this.lineToString(parsedLine)
-    }
-
-    toggleNext(line: string): string {
-        const parsedLine = this.parseLine(line)
-        parsedLine.next = !parsedLine.next
-        return this.lineToString(parsedLine)
-    }
-
     increaseDate(line: string, days: number): string {
         const parsedLine = this.parseLine(line)
         parsedLine.date = !parsedLine.date ? util.getDate() : util.increaseDate(parsedLine.date, days)
@@ -137,17 +137,18 @@ export class LineOperations {
     }
 
     toTodo(file: path.ParsedPath, line: string, lineNumber: number): TodoItem | undefined {
+        // TODO: Generalize this kind of check
+        // TODO: Stricter parsing. Do not allow weird marks in todo items for instance.
+        // TODO: We could make mark and types configurable by user if we wanted.
         const parsedLine = this.parseLine(line)
         if (parsedLine.check) {
             return {
-                done: parsedLine.check[1].toLowerCase() === "x",
+                mark: parsedLine.check,
                 text: parsedLine.line,
                 path: path.format(file),
                 line: lineNumber,
                 file: file.name,
                 date: parsedLine.date,
-                next: parsedLine.next,
-                wait: parsedLine.wait,
             }
         }
     }

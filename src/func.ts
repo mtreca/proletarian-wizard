@@ -20,9 +20,7 @@ export class ExtensionCommands {
             refreshTasks,
             toggleDate,
             toggleDone,
-            toggleNext,
             toggleTodo,
-            toggleWait,
         ]
         functions.forEach((fn) => {
             context.subscriptions.push(vscode.commands.registerCommand(`tp.${fn.name}`, fn))
@@ -112,16 +110,6 @@ export async function toggleTodo() {
 export async function toggleDate() {
     const lineOperations = new todo.LineOperations()
     util.SubstituteLine.substitute((line) => lineOperations.toggleDate(line))
-}
-
-export async function toggleWait() {
-    const lineOperations = new todo.LineOperations()
-    util.SubstituteLine.substitute((line) => lineOperations.toggleWait(line))
-}
-
-export async function toggleNext() {
-    const lineOperations = new todo.LineOperations()
-    util.SubstituteLine.substitute((line) => lineOperations.toggleNext(line))
 }
 
 export async function increaseDateDay() {

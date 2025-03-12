@@ -116,16 +116,14 @@ TODO
 
 
 
-## Prioritized
+## Future Work
 
 - [ ] Popup with overdue tasks on startup.
-- [ ] Fix issue when calling toggle task checkbox on a line with no leading `-`
-- [ ] Give workflow examples
-- [ ] Write a README.md explaining how to work with this project
-- [ ] Add a "move to Someday" function
+- [ ] Check if we can add extra user options in th quickpick depending on how we want to open the project
 - [ ] Add option to open and split if needed
 - [ ] Add templating functionality
-- [ ] Deprecate the next tag. For now.
+- [ ] Add a "move to Someday" function
 - [ ] Consider dropping the wait tag completely (would entirely get rid of the @ tagging system, nice, by changing the character inside the checkbox. Would make even more sense.)
 - [ ] Add a refresh button at the top of the `Task Overview` tree view
 - [ ] Add actions on tasks from the Tree view (e.g. toggle done, archive, move)
+- [ ] Fix issue when calling toggle task checkbox on a line with no leading `-`

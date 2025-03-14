@@ -30,15 +30,14 @@ Task Parser is designed to be:
 The core of Task Parser is a markdown parsing tool that will scan all the files present in the `Active` and `Someday` directories as well as `Inbox.md` for tasks. The structure of a task follows a simple syntax:
 
 ```
-- [{ ,x}] (YYYY-MM-DD) Task Title (@wait)
+- [{ ,-,x}] (YYYY-MM-DD) Task Title
 ```
 
 - A task is always defined by a dash `-` followed by a *checkbox* `[ ] `.
-- A task is either *pending* (`[ ]`) or *done* (`[x]`). Only to do tasks are parsed by task parser.
+- A task is either *pending* (`[ ]`), *waiting* (`[-]`) or *done* (`[x]`). Only to do tasks are parsed by task parser.
 - A task have optional due date in `YYYY-MM-DD` format after its checkbox.
-- A task can be marked as on hold using the `@wait` tag.
 
-Any text in Markdown documents not starting with `- [ ]` will automatically be skipped by Task Parser, which allows to freely add descriptions, diagrams or images to projects managed by Task Parser.
+Any text in Markdown documents not starting with `- [{ ,-,x}]` will automatically be skipped by Task Parser, which allows to freely add descriptions, diagrams or images to projects managed by Task Parser.
 
 ### Project Example
 
@@ -62,16 +61,16 @@ This is a sample project illustrating the syntax of Task Parser.
 
         We start with a first subtask, and assign it a due date.
 
-    - [ ] 2025-03-14: Subtask #2 - With due date and on hold @wait
+    - [ ] 2025-03-14: Subtask #2 - With due date and on hold
 
-        If the second subtask is dependent on the completion of the first, we use a `@wait` tag to hide it from
+        If the second subtask is dependent on the completion of the first, we use a `[-]` checkbox to hide it from
         currently actionable tasks. The tag will take precendence over the task's due date, which is still kept
         for tracking purposes.
 
     - [ ] Subtask #3
 
         Let's say you have a third subtask that is independent from the two first. You can get to work on it
-        right away, hence no need for a @wait tag.
+        right away, hence no need for a `[-]` checkbox.
 ```
 
 
@@ -123,7 +122,6 @@ TODO
 - [ ] Add option to open and split if needed
 - [ ] Add templating functionality
 - [ ] Add a "move to Someday" function
-- [ ] Consider dropping the wait tag completely (would entirely get rid of the @ tagging system, nice, by changing the character inside the checkbox. Would make even more sense.)
 - [ ] Add a refresh button at the top of the `Task Overview` tree view
 - [ ] Add actions on tasks from the Tree view (e.g. toggle done, archive, move)
 - [ ] Fix issue when calling toggle task checkbox on a line with no leading `-`

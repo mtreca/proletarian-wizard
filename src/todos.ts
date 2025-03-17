@@ -1,5 +1,6 @@
 import * as util from "./util"
 import * as path from "path"
+import * as vscode from "vscode"
 
 export enum TodoView {
     Today,
@@ -9,6 +10,7 @@ export enum TodoView {
     Someday,
 }
 
+// TODO: This should not be an interface but a full class.
 export interface TodoItem {
     mark: string
     date: string
@@ -18,47 +20,56 @@ export interface TodoItem {
     file: string
 }
 
+// TODO: Rename with more descriptive name
 export class TodoGroup {
     constructor(private todos: TodoItem[]) {
         this.todos = todos
     }
 
     public refresh() {
-        this.todos = findAllTodos()
+        this.todos = this.findAllTodos()
     }
 
-    private isInbox(todo: TodoItem) {
-        return todo.file === "Inbox"
+    public showOverdueTodos() {
+        const overdueTodos = this.todos.filter((todo) => todo.mark === "[ ]" && todo.date && util.isOverdue(todo.date))
+        if (overdueTodos && overdueTodos.length) {
+            vscode.window.showWarningMessage("You have overdue tasks.")
+        }
     }
 
-    private isAnytime(todo: TodoItem) {
-        return todo.file !== "Inbox" && !todo.date && todo.mark === "[ ]"
-    }
+    private findAllTodos(): TodoItem[] {
+        const parser = new LineOperations()
 
-    private isScheduled(todo: TodoItem) {
-        return todo.file !== "Inbox" && todo.date && todo.mark === "[ ]"
-    }
+        const todos: TodoItem[] = []
+        const files = [...util.getProjectPaths(), util.getFilePath(undefined, "Inbox")]
 
-    private isSomeday(todo: TodoItem) {
-        return todo.file !== "Inbox" && todo.mark === "[-]"
-    }
+        files.forEach((filePath) => {
+            let fileLines = util.getFileContents(filePath).split("\n")
+            let fileTasks = fileLines
+                .map((line, number) => parser.toTodo(path.parse(filePath), line, number))
+                .filter((item): item is TodoItem => !!item)
+            fileTasks.forEach((task) => {
+                todos.push(task)
+            })
+        })
 
-    private isToday(todo: TodoItem) {
-        return todo.file !== "Inbox" && todo.mark !== "[x]" && todo.date && util.isDue(todo.date)
+        return todos
     }
 
     public get(view?: TodoView): TodoItem[] {
         switch (view) {
             case TodoView.Inbox:
-                return this.todos.filter((todo) => this.isInbox(todo))
+                return this.todos.filter((todo) => todo.file === "Inbox")
             case TodoView.Anytime:
-                return this.todos.filter((todo) => this.isAnytime(todo))
+                return this.todos.filter((todo) => todo.file !== "Inbox" && !todo.date && todo.mark === "[ ]")
             case TodoView.Scheduled:
-                return this.todos.filter((todo) => this.isScheduled(todo))
+                return this.todos.filter((todo) => todo.file !== "Inbox" && todo.date && todo.mark === "[ ]")
             case TodoView.Someday:
-                return this.todos.filter((todo) => this.isSomeday(todo))
+                return this.todos.filter((todo) => todo.file !== "Inbox" && todo.mark === "[-]")
             case TodoView.Today:
-                return this.todos.filter((todo) => this.isToday(todo))
+                return this.todos.filter(
+                    (todo) => todo.file !== "Inbox" && todo.mark === "[ ]" && todo.date && util.isDue(todo.date)
+                )
             default:
                 return this.todos
         }
@@ -75,6 +86,7 @@ interface ParsedLine {
     line: string
 }
 
+// TODO: Make this a class
 export class LineOperations {
     constructor() {}
 
@@ -152,23 +164,4 @@ export class LineOperations {
             }
         }
     }
-}
-
-export function findAllTodos(): TodoItem[] {
-    const parser = new LineOperations()
-
-    const todos: TodoItem[] = []
-    const files = [...util.getProjectPaths(), util.getFilePath(undefined, "Inbox")]
-
-    files.forEach((filePath) => {
-        let fileLines = util.getFileContents(filePath).split("\n")
-        let fileTasks = fileLines
-            .map((line, number) => parser.toTodo(path.parse(filePath), line, number))
-            .filter((item): item is TodoItem => !!item)
-        fileTasks.forEach((task) => {
-            todos.push(task)
-        })
-    })
-
-    return todos
 }

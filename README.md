@@ -113,15 +113,16 @@ task-parser.baseDir
 TODO
 
 
-
-
 ## Future Work
 
-- [ ] Popup with overdue tasks on startup.
-- [ ] Check if we can add extra user options in th quickpick depending on how we want to open the project
+- [ ] Check if we can add extra user options in the quickpick depending on how we want to open the project
 - [ ] Add option to open and split if needed
+- [ ] Multiline operations in task parasr: toggle date line by line for instance
 - [ ] Add templating functionality
 - [ ] Add a "move to Someday" function
 - [ ] Add a refresh button at the top of the `Task Overview` tree view
 - [ ] Add actions on tasks from the Tree view (e.g. toggle done, archive, move)
 - [ ] Fix issue when calling toggle task checkbox on a line with no leading `-`
+- [ ] Add view of all projects files in the sidebar TP
+- [ ] Alphabetically list tasks per project on Someday view
+

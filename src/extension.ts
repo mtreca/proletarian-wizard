@@ -25,6 +25,9 @@ export function activate(vscontext: vscode.ExtensionContext) {
 
     Funcs = new func.ExtensionCommands(vscontext)
     Views = new view.ExtensionViews()
+
+    Todos.showOverdueTodos()
+
 }
 
 export function deactivate() {}
